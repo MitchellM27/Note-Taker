@@ -1,16 +1,30 @@
-const express = require("express");
-const fs = require("fs");
+const express = require('express');
+const path = require('path');
+const api = require('./routes/index.js');
 
-var app = express();
-var PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001;
 
-app.use(express.urlencoded({ extended: true }));
+const app = express();
+
+
+// Middleware for parsing JSON and urlencoded form data
 app.use(express.json());
-app.use("/assets", express.static("./assets"));
+app.use(express.urlencoded({ extended: true }));
+app.use('/api', api);
 
-require("./routing/html-routes")(app);
-require("./routing/api-routes")(app);
+app.use(express.static('public'));
 
-app.listen(PORT, function() {
-    console.log("App listening on PORT " + PORT);
-});
+// GET Route for homepage
+app.get('/', (req, res) =>
+  res.sendFile(path.join(__dirname, '/public/assets/index.html'))
+);
+
+// GET Route for notes page
+app.get('/notes', (req, res) =>
+  res.sendFile(path.join(__dirname, '/public/assets/notes.html'))
+);
+
+
+app.listen(PORT, () =>
+  console.log(`App listening at http://localhost:${PORT}`)
+);
