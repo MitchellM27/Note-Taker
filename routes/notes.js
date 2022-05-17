@@ -1,5 +1,6 @@
 const noting = require('express').Router();
 const { readAndAppend, readFromFile } = require('../helpers/fsUtils');
+const uniqid = require('uniqid')
 
 noting.get('/', (req, res) =>
   readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)))
@@ -12,6 +13,7 @@ noting.post('/', (req, res) => {
     const newNotes = {
       title,
       text,
+      id : uniqid(),
     };
 
     readAndAppend(newNotes, './db/db.json');
@@ -26,5 +28,6 @@ noting.post('/', (req, res) => {
     res.json('Error in posting notes');
   }
 });
+
 
 module.exports = noting;
